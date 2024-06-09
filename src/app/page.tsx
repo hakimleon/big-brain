@@ -8,6 +8,8 @@ import {
 } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Home() {
   const createDocument = useMutation(api.documents.createDocuments);
@@ -24,16 +26,16 @@ export default function Home() {
       </Unauthenticated>
       <Authenticated>
         <UserButton />
-
-        <button
+                <ModeToggle />
+        <Button
           className="border rounded-md px-6 py-2"
-          onClick={() => createDocument({ title: "Hello Mohand" })}
+          onClick={() => createDocument({ title: "Hello Mohand"})}
         >
           Covex Function
-        </button>
+        </Button>
 
         {documents?.map((doc) => (
-          <div key={doc._id}>{doc.title}</div>
+          <div key={doc._id}>{doc.title} - {doc.tokenIdentifier}</div>
         ))}
       </Authenticated>
     </main>
