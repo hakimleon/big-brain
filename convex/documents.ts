@@ -18,17 +18,49 @@ export const getDocuments = query({
 export const createDocuments = mutation({
   args: {
     title: v.string(),
+    fileId: v.id("_storage"),
   },
   handler: async (ctx, args) => {
     const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
 
-    console.log(userId);
     if (!userId) {
       throw new ConvexError("Not authenticated");
     }
     await ctx.db.insert("documents", {
       title: args.title,
       tokenIdentifier: userId,
+      fileId: args.fileId,
     });
+  },
+});
+
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx, args) => {
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+export const getDocumentId = query({
+  args: {
+    documentId: v.id("documents"),
+  },
+  async handler(ctx, args) {
+    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+
+    if (!userId) {
+      return null;
+    }
+
+    const document = await ctx.db.get(args.documentId);
+
+    if(!document) {
+      return null
+    }
+
+    if(document?.tokenIdentifier !== userId) {
+      return null
+    }
+    return {...document, documentUrl: await ctx.storage.getUrl(document.fileId)};
   },
 });

@@ -9,8 +9,11 @@ import {
 import { Doc } from "../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
+import Link from "next/link";
 
 const DocumentCard = ({ doc }: { doc: Doc<"documents"> }) => {
+    
+
   return (
     <Card className="max-w-md">
       <CardHeader>
@@ -21,10 +24,12 @@ const DocumentCard = ({ doc }: { doc: Doc<"documents"> }) => {
         <p>Card Content</p>
       </CardContent>
       <CardFooter>
-        <Button variant={"outline"}>
+        <Button variant={"outline"} asChild>
+          <Link href={`/documents/${doc._id}`}>
             <Eye className="mr-2 h-4 w-4" />
-            View document
-            </Button>
+            View
+          </Link>
+        </Button>
       </CardFooter>
     </Card>
   );
